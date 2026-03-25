@@ -263,7 +263,12 @@ export default function App() {
                 CEP: 18540-000
               </p>
               <div className="pt-4">
-                <a className="text-primary font-bold flex items-center gap-2 border-b border-secondary w-fit pb-1" href="#">
+                <a 
+                  className="text-primary font-bold flex items-center gap-2 border-b border-secondary w-fit pb-1 hover:opacity-80 transition-opacity" 
+                  href="https://google.com/maps?q=-23.2548121,-47.483355&z=17&hl=pt-BR"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span className="material-symbols-outlined text-sm">map</span>
                   VER NO MAPA
                 </a>
@@ -272,7 +277,23 @@ export default function App() {
             <div className="w-full md:w-1/2 order-1 md:order-2">
               <div className="relative group">
                 <div className="absolute -top-4 -left-4 w-full h-full bg-secondary-fixed-dim/20 z-0"></div>
-                <img alt="Location" className="relative z-10 w-full aspect-square object-cover shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGcF1wp647AhNUO4D2ekhTdE376cb2PgvIrDUSQJpsjS4cAWd0NOS6wmDzcAJBxlLeAB_NVbfFep6Mdk6rrvJkwXE6qMylCnyR0wwVLJrOHEZjO1Csx81-0Bn3SOT2VlPlnzcyPXPPJE5x6b6t-I3ZWPxLSuJBcQ_EnS2mGtXx8W2YZu2qvPuLc1tf5pQCQ0BhoYrf9qyMsc3jtJG3Eas_kAEudDodoFJC2nPxC13789slfvjsf29eMu8ErKlMIKxMMBT2zG8Bt3Hg"/>
+                <a 
+                  href="https://google.com/maps?q=-23.2548121,-47.483355&z=17&hl=pt-BR"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 w-full aspect-square block shadow-2xl overflow-hidden hover:opacity-90 transition-opacity"
+                >
+                  <iframe 
+                    src="https://maps.google.com/maps?q=-23.2548121,-47.483355&z=17&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0, pointerEvents: 'none' }} 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Mapa do Local"
+                  ></iframe>
+                </a>
               </div>
             </div>
           </div>
