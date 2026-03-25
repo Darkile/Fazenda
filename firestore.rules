@@ -1,0 +1,90 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: rsvps
+// Document ID: [auto-generated]
+// Fields:
+//   - name: string (required, max 100 chars) - Full name of the guest
+//   - phone: string (required, max 20 chars) - Phone number of the guest
+//   - createdAt: timestamp (required) - Timestamp when the RSVP was submitted
+//
+// Collection: public_stats
+// Document ID: rsvps
+// Fields:
+//   - count: number - Total number of RSVPs
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // Validate string length
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+    
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Domain Validators
+    function isValidRSVP() {
+      return hasOnlyAllowedFields(['name', 'phone', 'createdAt']) &&
+             validStringLength('name', 1, 100) &&
+             validStringLength('phone', 1, 20) &&
+             request.resource.data.createdAt is timestamp;
+    }
+
+    // Check if user is an admin
+    function isAdmin() {
+      return isAuthenticated() &&
+        (
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+          (request.auth.token.email == "rafael.276ribeiro@gmail.com" && request.auth.token.email_verified == true)
+        );
+    }
+
+    match /rsvps/{rsvpId} {
+      // Anyone can create an RSVP (public form)
+      allow create: if isValidRSVP();
+      // Only admins can read, update, or delete RSVPs
+      allow read, update, delete: if isAdmin();
+    }
+    
+    match /public_stats/{statId} {
+      // Anyone can read public stats
+      allow read: if true;
+      // Anyone can increment the count by exactly 1
+      allow create: if request.resource.data.keys().hasOnly(['count']) && request.resource.data.count == 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count']) &&
+                    request.resource.data.count == resource.data.count + 1;
+    }
+    
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

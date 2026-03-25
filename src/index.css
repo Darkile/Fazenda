@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Noto Serif", ui-serif, Georgia, serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --color-secondary-fixed-dim: #e9c349;
+  --color-surface-bright: #faf9f5;
+  --color-surface-container-high: #e9e8e4;
+  --color-on-surface: #1b1c1a;
+  --color-on-secondary: #ffffff;
+  --color-surface-container: #efeeea;
+  --color-on-surface-variant: #434843;
+  --color-on-primary: #ffffff;
+  --color-outline: #737973;
+  --color-on-background: #1b1c1a;
+  --color-on-tertiary-container: #92938f;
+  --color-on-secondary-fixed-variant: #574500;
+  --color-secondary-fixed: #ffe088;
+  --color-on-error: #ffffff;
+  --color-on-primary-fixed-variant: #364c3c;
+  --color-inverse-surface: #2f312e;
+  --color-primary-container: #1b3022;
+  --color-secondary-container: #fed65b;
+  --color-error: #ba1a1a;
+  --color-surface-container-low: #f4f4f0;
+  --color-primary-fixed: #d0e9d4;
+  --color-tertiary: #161815;
+  --color-outline-variant: #c3c8c1;
+  --color-on-primary-fixed: #0b2013;
+  --color-tertiary-fixed: #e3e3de;
+  --color-on-primary-container: #819986;
+  --color-surface-tint: #4d6453;
+  --color-on-secondary-fixed: #241a00;
+  --color-surface: #faf9f5;
+  --color-on-tertiary: #ffffff;
+  --color-primary: #061b0e;
+  --color-surface-dim: #dbdad6;
+  --color-primary-fixed-dim: #b4cdb8;
+  --color-on-tertiary-fixed-variant: #454744;
+  --color-surface-variant: #e3e2df;
+  --color-secondary: #735c00;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-tertiary-fixed: #1a1c19;
+  --color-inverse-on-surface: #f2f1ed;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-inverse-primary: #b4cdb8;
+  --color-tertiary-container: #2a2c29;
+  --color-on-secondary-container: #745c00;
+  --color-tertiary-fixed-dim: #c6c7c2;
+  --color-background: #faf9f5;
+  --color-surface-container-highest: #e3e2df;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.glass-effect {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.asymmetric-border {
+  clip-path: polygon(0 0, 100% 5%, 100% 100%, 0 95%);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}

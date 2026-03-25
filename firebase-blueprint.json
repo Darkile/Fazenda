@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "RSVP": {
+      "title": "RSVP",
+      "description": "A guest's confirmation of attendance.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the guest."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number of the guest."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the RSVP was submitted."
+        }
+      },
+      "required": ["name", "phone", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/rsvps/{rsvpId}": {
+      "schema": "RSVP",
+      "description": "Collection of all RSVPs."
+    }
+  }
+}
