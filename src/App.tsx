@@ -82,6 +82,12 @@ export default function App() {
       await batch.commit();
       
       setSubmitted(true);
+
+      // Redirecionar para o WhatsApp
+      const message = `Olá! Gostaria de confirmar minha presença. Nome: ${formData.name}, Telefone: ${formData.phone}`;
+      const whatsappUrl = `https://wa.me/5515998018939?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'rsvps');
     } finally {
