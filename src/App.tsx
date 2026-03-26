@@ -21,6 +21,12 @@ export default function App() {
   const [quickConfirmed, setQuickConfirmed] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalFormData, setModalFormData] = useState({
+    name: '',
+    email: ''
+  });
+
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'public_stats', 'rsvps'), (docSnap) => {
       if (docSnap.exists()) {
@@ -34,18 +40,26 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleQuickConfirm = async () => {
+  const handleQuickConfirm = () => {
     if (quickConfirmed) return;
-    setQuickConfirmed(true);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 5000);
+    setShowModal(true);
+  };
+
+  const handleModalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setModalFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
     try {
       const batch = writeBatch(db);
       
       const rsvpRef = doc(collection(db, 'rsvps'));
       batch.set(rsvpRef, {
-        name: 'Confirmação Rápida',
-        phone: 'N/A',
+        name: modalFormData.name,
+        email: modalFormData.email,
         createdAt: serverTimestamp()
       });
       
@@ -53,8 +67,21 @@ export default function App() {
       batch.set(statsRef, { count: increment(1) }, { merge: true });
       
       await batch.commit();
+      
+      setQuickConfirmed(true);
+      setShowModal(false);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+
+      // Redirecionar para o WhatsApp
+      const message = `Olá! Gostaria de confirmar minha presença. Nome: ${modalFormData.name}, E-mail: ${modalFormData.email}`;
+      const whatsappUrl = `https://wa.me/5515998018939?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+
     } catch (error) {
-      console.error(error);
+      handleFirestoreError(error, OperationType.CREATE, 'rsvps');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -367,6 +394,48 @@ export default function App() {
         <span className="material-symbols-outlined">check_circle</span>
         <span className="font-bold tracking-widest uppercase text-sm whitespace-nowrap">Obrigado, esperamos você!</span>
       </div>
+
+      {/* Modal Form */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="bg-surface text-on-surface p-8 rounded-lg shadow-2xl w-full max-w-md border border-outline-variant/20 relative">
+            <button 
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <h3 className="font-headline text-2xl text-primary mb-6">Confirmar Presença</h3>
+            <form onSubmit={handleModalSubmit} className="space-y-4">
+              <input
+                required
+                type="text"
+                name="name"
+                value={modalFormData.name}
+                onChange={handleModalChange}
+                className="w-full bg-transparent border-b border-primary/30 py-3 text-primary placeholder:text-primary/60 focus:outline-none focus:border-primary transition-colors"
+                placeholder="Nome Completo"
+              />
+              <input
+                required
+                type="email"
+                name="email"
+                value={modalFormData.email}
+                onChange={handleModalChange}
+                className="w-full bg-transparent border-b border-primary/30 py-3 text-primary placeholder:text-primary/60 focus:outline-none focus:border-primary transition-colors"
+                placeholder="E-mail"
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-primary text-on-primary py-4 rounded-sm font-bold tracking-widest uppercase text-xs mt-6 disabled:opacity-70"
+              >
+                {isSubmitting ? 'Enviando...' : 'Confirmar e Enviar WhatsApp'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
