@@ -24,7 +24,7 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [modalFormData, setModalFormData] = useState({
     name: '',
-    email: ''
+    phone: ''
   });
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function App() {
       const rsvpRef = doc(collection(db, 'rsvps'));
       batch.set(rsvpRef, {
         name: modalFormData.name,
-        email: modalFormData.email,
+        phone: modalFormData.phone,
         createdAt: serverTimestamp()
       });
       
@@ -74,9 +74,9 @@ export default function App() {
       setTimeout(() => setShowToast(false), 5000);
 
       // Redirecionar para o WhatsApp
-      const message = `Olá! Gostaria de confirmar minha presença. Nome: ${modalFormData.name}, E-mail: ${modalFormData.email}`;
+      const message = `Olá! Gostaria de confirmar minha presença. Nome: ${modalFormData.name}, Telefone: ${modalFormData.phone}`;
       const whatsappUrl = `https://wa.me/5515998018939?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
+      window.location.href = whatsappUrl;
 
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'rsvps');
@@ -113,7 +113,7 @@ export default function App() {
       // Redirecionar para o WhatsApp
       const message = `Olá! Gostaria de confirmar minha presença. Nome: ${formData.name}, Telefone: ${formData.phone}`;
       const whatsappUrl = `https://wa.me/5515998018939?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
+      window.location.href = whatsappUrl;
 
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'rsvps');
@@ -418,12 +418,12 @@ export default function App() {
               />
               <input
                 required
-                type="email"
-                name="email"
-                value={modalFormData.email}
+                type="tel"
+                name="phone"
+                value={modalFormData.phone}
                 onChange={handleModalChange}
                 className="w-full bg-transparent border-b border-primary/30 py-3 text-primary placeholder:text-primary/60 focus:outline-none focus:border-primary transition-colors"
-                placeholder="E-mail"
+                placeholder="Telefone / WhatsApp"
               />
               <button
                 type="submit"
